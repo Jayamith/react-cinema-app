@@ -37,6 +37,7 @@ jobs:
           name: Installing AWS CLI
           working_directory: /
           command:
+            sudo easy_install pip
             sudo pip install awscli
       - run:
           name: Build Project
