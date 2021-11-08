@@ -88,7 +88,7 @@ jobs:
       - run:
           name: Deploy to AWS Cloudfront
           command:
-            aws configure set preview.cloudfront true
+            aws configure set preview.cloudfront
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
               aws cloudfront create-invalidation --distribution-id ${PRODUCTION_DISTRIBUTING_ID} --paths /\*
