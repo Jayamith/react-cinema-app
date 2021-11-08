@@ -43,7 +43,8 @@ jobs:
       - run:
           name: Build Project
           command:
-            npm install
+            npm install;
+            npm run build;
       - run:
           name: Deploy to AWS S3
           command:
