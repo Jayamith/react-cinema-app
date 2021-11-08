@@ -45,8 +45,6 @@ jobs:
           command:
             npm install
             npm run build
-            cd build
-            zip ../build.zip -r * .[^.]*
       - run:
           name: Deploy to AWS S3
           command:
