@@ -90,15 +90,13 @@ jobs:
           command:
             aws configure set preview.cloudfront true;
             aws configure set preview.create-invalidation true;
-            if [ "${CIRCLE_BRANCH}" == "master" ];
-            then
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
               aws cloudfront create-invalidation --distribution-id ${PRODUCTION_DISTRIBUTING_ID} --paths /\*
-            elif [ "${CIRCLE_BRANCH}" == "staging" ];
-            then
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
               aws cloudfront create-invalidation --distribution-id ${STAGING_DISTRIBUTION_ID} --paths /\*
             else
               aws cloudfront create-invalidation --distribution-id ${DEV_DISTRIBUTION_ID} --paths /\*
-            fi;
+            fi
 
 workflows:
   build_and_deploy:
