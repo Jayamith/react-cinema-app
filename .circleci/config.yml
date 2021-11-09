@@ -1,11 +1,17 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
 # See: https://circleci.com/docs/2.0/configuration-reference
+orbs:
+  slack: circleci/slack@4.4.4
 version: 2.1
 executors:
   app-executor:
     docker:
       - image: cimg/node:16.13.0
     working_directory: ~/repo
+  slack-executor:
+    docker:
+      - image: 'cibuilds/base:latest'
+    resource_class: small
 
 aliases:
   - &show-current-branch-name
@@ -85,6 +91,15 @@ jobs:
           name: Deploy to AWS Cloudfront
           command: aws cloudfront create-invalidation --distribution-id ${DEV_DISTRIBUTION_ID} --paths /\*
 
+  notify-via-slack:
+    executor: slack-executor
+    steps:
+      - slack/notify:
+          message: "${CIRCLE_BRANCH} branch deployment to aws s3 and cloudfront is completed."
+          webhook: $CIRCLECI_SLACK_WEBHOOK
+      - slack/status:
+          webhook: $CIRCLECI_SLACK_WEBHOOK
+
 workflows:
   build_and_deploy:
     jobs:
@@ -101,6 +116,15 @@ workflows:
       - deploy-to-aws-cloudfront:
           requires:
             - deploy-to-aws-s3
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - notify-via-slack:
+          requires:
+            - deploy-to-aws-cloudfront
           filters:
             branches:
               only:
